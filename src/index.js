@@ -68,6 +68,25 @@ app.post('/decode', async (req, res) => {
   return res.status(200).send({ error: '', message: decode });
 });
 
+app.post('/decodeImage', upload.single('image'), async (req, res) => {
+  const { password } = req.body;
+  const { buffer } = req.file;
+
+  if (!password) {
+    return res.status(200).send({ message: '', error: 'No password provided' });
+  }
+  const decode = await decodeDataFromImage(buffer, password);
+  if (decode === 0)
+    return res.status(200).send({ message: '', error: 'Wrong password' });
+  console.log(decode, 'decode');
+  if (decode instanceof Buffer) {
+    res.contentType('image/png');
+    return res.send(Buffer.from(decode, 'binary'));
+  }
+  res.contentType('application/json');
+  return res.status(200).send({ error: '', message: decode });
+});
+
 app.post(
   '/encodeImage',
   upload.fields([{ name: 'image' }, { name: 'imageToEncode' }]),

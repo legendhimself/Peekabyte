@@ -33,6 +33,10 @@ const addDataToByte = (data) => (byte, i) =>
 
 const embedData = ([data, bed]) => bed.map(addDataToByte(data));
 
+const getBytesAvailable = (buffer) => {
+  return PNG.sync.read(buffer).data.length;
+}
+
 const store = (imageData, message) => {
   const bytesAvailable = imageData.length;
   const bytesToStore = LENGTH_BYTES + SHASUM_BYTES + message.length;
@@ -92,4 +96,5 @@ const conceal = (password) => (image, message, encoding) => {
 
 module.exports = {
   conceal,
+  getBytesAvailable
 };
